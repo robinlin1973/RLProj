@@ -152,7 +152,7 @@ def main():
 
     training_records = []
     running_reward, running_q = -1000, 0
-    for i_ep in range(1000):
+    for i_ep in range(600):
         score = 0
         state = env.reset()
 
@@ -174,14 +174,16 @@ def main():
         if i_ep % args.log_interval == 0:
             print('Step {}\tAverage score: {:.2f}\tAverage Q: {:.2f}'.format(
                 i_ep, running_reward, running_q))
-        if running_reward > -200:
-            print("Solved! Running reward is now {}!".format(running_reward))
-            env.close()
-            agent.save_param()
-            with open('log/ddpg_training_records.pkl', 'wb') as f:
-                pickle.dump(training_records, f)
-            break
-
+        # if running_reward > -200:
+        #     print("Solved! Running reward is now {}!".format(running_reward))
+        #     env.close()
+        #     agent.save_param()
+        #     with open('log/ddpg_training_records.pkl', 'wb') as f:
+        #         pickle.dump(training_records, f)
+        #     break
+    agent.save_param()
+    with open('log/ddpg_training_records.pkl', 'wb') as f:
+        pickle.dump(training_records, f)
     env.close()
 
     plt.plot([r.ep for r in training_records], [r.reward for r in training_records])

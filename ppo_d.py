@@ -143,7 +143,7 @@ def main():
     training_records = []
     running_reward = -1000
     state = env.reset()
-    for i_ep in range(1000):
+    for i_ep in range(600):
         score = 0
         state = env.reset()
 
@@ -162,13 +162,17 @@ def main():
 
         if i_ep % args.log_interval == 0:
             print('Ep {}\tMoving average score: {:.2f}\t'.format(i_ep, running_reward))
-        if running_reward > -200:
-            print("Solved! Moving average score is now {}!".format(running_reward))
-            env.close()
-            agent.save_param()
-            with open('log/ppo_d_training_records.pkl', 'wb') as f:
-                pickle.dump(training_records, f)
-            break
+        # if running_reward > -200:
+        #     print("Solved! Moving average score is now {}!".format(running_reward))
+        #     env.close()
+        #     agent.save_param()
+        #     with open('log/ppo_d_training_records.pkl', 'wb') as f:
+        #         pickle.dump(training_records, f)
+        #     break
+    env.close()
+    agent.save_param()
+    with open('log/ppo_d_training_records.pkl', 'wb') as f:
+        pickle.dump(training_records, f)
 
     plt.plot([r.ep for r in training_records], [r.reward for r in training_records])
     plt.title('PPO (discrete)')

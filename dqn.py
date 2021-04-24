@@ -86,7 +86,7 @@ class Agent():
         if np.random.random() < self.epsilon:
             action_index = np.random.randint(args.num_actions)
         else:
-            probs = agent.eval_net(state)
+            probs = self.eval_net(state)
             action_index = probs.max(1)[1].item()
         return self.action_list[action_index], action_index
 
@@ -137,8 +137,10 @@ def main():
     agent = Agent()
 
     training_records = []
+    reword_single = []
+    reward_records = []
     running_reward, running_q = -1000, 0
-    for i_ep in range(100):
+    for i_ep in range(600):
         score = 0
         state = env.reset()
 
@@ -156,18 +158,25 @@ def main():
 
         running_reward = running_reward * 0.9 + score * 0.1
         training_records.append(TrainingRecord(i_ep, running_reward))
+        reword_single.append(running_reward)
 
         if i_ep % args.log_interval == 0:
             print('Ep {}\tAverage score: {:.2f}\tAverage Q: {:.2f}'.format(
                 i_ep, running_reward, running_q))
-        if running_reward > -200:
-            print("Solved! Running reward is now {}!".format(running_reward))
-            env.close()
-            agent.save_param()
-            with open('log/dqn_training_records.pkl', 'wb') as f:
-                pickle.dump(training_records, f)
-            break
+        # if running_reward > -200:
+        #     print("Solved! Running reward is now {}!".format(running_reward))
+        #     env.close()
+        #     agent.save_param()
+        #     with open('log/dqn_training_records.pkl', 'wb') as f:
+        #         pickle.dump(training_records, f)
+        #     break
 
+    agent.save_param()
+    with open('log/dqn_training_records.pkl', 'wb') as f:
+        pickle.dump(training_records, f)
+
+    with open('log/dqn_reward_single.pkl', 'wb') as f:
+        pickle.dump(reword_single, f)
     env.close()
 
     plt.plot([r.ep for r in training_records], [r.reward for r in training_records])
