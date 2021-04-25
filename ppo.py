@@ -1,7 +1,8 @@
 import argparse
 import pickle
 from collections import namedtuple
-
+import os
+import numpy as np
 import matplotlib.pyplot as plt
 
 import gym
@@ -152,6 +153,11 @@ def main():
     env.seed(args.seed)
 
     agent = Agent()
+    reword_single = []
+    if os.path.isfile('log/ppo_reward.np'):
+        reward_records = np.load('log/ppo_reward.np', allow_pickle=True)
+    else:
+        reward_records = []
 
     training_records = []
     running_reward = -1000
@@ -172,6 +178,7 @@ def main():
 
         running_reward = running_reward * 0.9 + score * 0.1
         training_records.append(TrainingRecord(i_ep, running_reward))
+        reword_single.append(running_reward)
 
         if i_ep % args.log_interval == 0:
             print('Ep {}\tMoving average score: {:.2f}\t'.format(i_ep, running_reward))
@@ -187,14 +194,25 @@ def main():
     with open('log/ppo_training_records.pkl', 'wb') as f:
         pickle.dump(training_records, f)
 
+    if os.path.isfile('log/ppo_reward.np'):
+        result = np.c_[reward_records,reword_single]
+    else:
+        result = reword_single
 
-    plt.plot([r.ep for r in training_records], [r.reward for r in training_records])
-    plt.title('PPO')
-    plt.xlabel('Episode')
-    plt.ylabel('Moving averaged episode reward')
-    plt.savefig("img/ppo.png")
-    plt.show()
+    with open('log/ppo_reward.np', 'wb') as f:
+        np.save(f,result)
+
+    # plt.plot([r.ep for r in training_records], [r.reward for r in training_records])
+    # plt.title('PPO')
+    # plt.xlabel('Episode')
+    # plt.ylabel('Moving averaged episode reward')
+    # plt.savefig("img/ppo.png")
+    # plt.show()
 
 
 if __name__ == '__main__':
-    main()
+    for _ in range(10):
+        main()
+        if os.path.isfile('log/ppo_reward.np'):
+            reward_records = np.load('log/ppo_reward.np', allow_pickle=True)
+            print("shape:" + str(reward_records.shape))

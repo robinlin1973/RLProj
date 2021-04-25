@@ -3,8 +3,8 @@ import numpy as np
 import torch
 import seaborn as sns
 
-x_pxl, y_pxl = 400, 400
-fig = plt.figure(figsize=(8, 20))
+x_pxl, y_pxl = 800, 400
+fig = plt.figure(figsize=(20, 8))
 fig.suptitle('HEATMAP')
 sns.color_palette("crest", as_cmap=True)
 
@@ -24,7 +24,7 @@ def format(ax,map,algo_name=None,title=None, cmap=plt.cm.summer):
     g.set_yticklabels(['-8', '-4', '0', '4', '8'])
 
 def dqn_heatmap():
-    from dqn import Net
+    from ddqn import Net
 
     state = torch.Tensor([[np.cos(theta), np.sin(theta), thetadot]
                           for thetadot in np.linspace(-8, 8, y_pxl)
@@ -36,7 +36,7 @@ def dqn_heatmap():
     value_map = q.max(1)[0].view(y_pxl, x_pxl).detach().numpy()
     # action_map = q.max(1)[1].view(y_pxl, x_pxl).detach().numpy() / 10 * 4 - 2
 
-    format(plt.subplot(311),value_map, algo_name= 'DQN', title ="Value Map")
+    format(plt.subplot(131),value_map, algo_name= 'DDQN')
     # sns.heatmap(value_map, cmap="YlGnBu", linewidths=0.5, ax=plt.subplot(421))
     # format(plt.subplot(322),action_map, algo_name= 'DQN', title ="Action Map",cmap= plt.cm.winter)
 
@@ -54,7 +54,7 @@ def ddpg_heatmap():
     cnet.load_state_dict(torch.load('param/ddpg_cnet_params.pkl'))
     value_map = cnet(state, anet(state)).view(y_pxl, x_pxl).detach().numpy()
 
-    format(plt.subplot(312), value_map, algo_name= 'DDPQ')
+    format(plt.subplot(132), value_map, algo_name= 'DDPQ')
     # format(plt.subplot(324), action_map,  algo_name= 'DDPQ',cmap= plt.cm.winter)
 
 
@@ -71,7 +71,7 @@ def ppo_heatmap():
     anet.load_state_dict(torch.load('param/ppo_anet_params.pkl'))
     # action_map = anet(state)[0].view(y_pxl, x_pxl).detach().numpy()
 
-    format(plt.subplot(313), value_map, algo_name= 'PPO')
+    format(plt.subplot(133), value_map, algo_name= 'PPO')
     # format(plt.subplot(426), action_map, algo_name= 'PPO',cmap= plt.cm.winter)
 
 

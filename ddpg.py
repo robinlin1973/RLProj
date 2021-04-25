@@ -11,6 +11,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torch.distributions import Normal
+import os
 
 parser = argparse.ArgumentParser(description='Solve the Pendulum-v0 with DDPG')
 parser.add_argument(
@@ -149,6 +150,12 @@ def main():
     env.seed(args.seed)
 
     agent = Agent()
+    training_records = []
+    reword_single = []
+    if os.path.isfile('log/ddpg_reward.np'):
+        reward_records = np.load('log/ddpg_reward.np', allow_pickle=True)
+    else:
+        reward_records = []
 
     training_records = []
     running_reward, running_q = -1000, 0
@@ -170,6 +177,7 @@ def main():
 
         running_reward = running_reward * 0.9 + score * 0.1
         training_records.append(TrainingRecord(i_ep, running_reward))
+        reword_single.append(running_reward)
 
         if i_ep % args.log_interval == 0:
             print('Step {}\tAverage score: {:.2f}\tAverage Q: {:.2f}'.format(
@@ -182,17 +190,29 @@ def main():
         #         pickle.dump(training_records, f)
         #     break
     agent.save_param()
-    with open('log/ddpg_training_records.pkl', 'wb') as f:
-        pickle.dump(training_records, f)
+
+
+    if os.path.isfile('log/ddpg_reward.np'):
+        result = np.c_[reward_records,reword_single]
+    else:
+        result = reword_single
+
+    with open('log/ddpg_reward.np', 'wb') as f:
+        np.save(f,result)
+
     env.close()
 
-    plt.plot([r.ep for r in training_records], [r.reward for r in training_records])
-    plt.title('DDPG')
-    plt.xlabel('Episode')
-    plt.ylabel('Moving averaged episode reward')
-    plt.savefig("img/ddpg.png")
-    plt.show()
+    # plt.plot([r.ep for r in training_records], [r.reward for r in training_records])
+    # plt.title('DDPG')
+    # plt.xlabel('Episode')
+    # plt.ylabel('Moving averaged episode reward')
+    # plt.savefig("img/ddpg.png")
+    # plt.show()
 
 
 if __name__ == '__main__':
-    main()
+    for _ in range(10):
+        main()
+        if os.path.isfile('log/ddpg_reward.np'):
+            reward_records = np.load('log/ddpg_reward.np', allow_pickle=True)
+            print("ddpg shape:" + str(reward_records.shape))

@@ -7,10 +7,10 @@ if __name__ == '__main__':
 
     sns.set_style("darkgrid")
 
-    reward_records = np.load('log/dqn_reward.np', allow_pickle=True)
+    reward_records = np.load('log/ddqn_reward.np', allow_pickle=True)
     dqn = np.var(reward_records, axis=1)
     normalized_dqn = dqn/np.linalg.norm(dqn)
-    sns.lineplot( data=normalized_dqn,legend='brief', label='DQN')
+    sns.lineplot( data=normalized_dqn,legend='brief', label='DDQN')
 
     reward_records = np.load('log/ppo_reward.np', allow_pickle=True)
     ppo = np.var(reward_records, axis=1)

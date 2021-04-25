@@ -19,7 +19,7 @@ def draw_line(nwk):
     sns.lineplot( data=reward_records[:,0],legend='brief', label=nwk)
 
 def main():
-    draw_line('dqn')
+    draw_line('ddqn')
     draw_line('ddpg')
     draw_line('ppo')
 
