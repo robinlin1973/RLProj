@@ -34,11 +34,11 @@ def dqn_heatmap():
     net.load_state_dict(torch.load('param/dqn_net_params.pkl'))
     q = net(state)
     value_map = q.max(1)[0].view(y_pxl, x_pxl).detach().numpy()
-    action_map = q.max(1)[1].view(y_pxl, x_pxl).detach().numpy() / 10 * 4 - 2
+    # action_map = q.max(1)[1].view(y_pxl, x_pxl).detach().numpy() / 10 * 4 - 2
 
-    format(plt.subplot(421),value_map, algo_name= 'DQN', title ="Value Map")
+    format(plt.subplot(311),value_map, algo_name= 'DQN', title ="Value Map")
     # sns.heatmap(value_map, cmap="YlGnBu", linewidths=0.5, ax=plt.subplot(421))
-    format(plt.subplot(422),action_map, algo_name= 'DQN', title ="Action Map",cmap= plt.cm.winter)
+    # format(plt.subplot(322),action_map, algo_name= 'DQN', title ="Action Map",cmap= plt.cm.winter)
 
 def ddpg_heatmap():
     from ddpg import ActorNet, CriticNet
@@ -48,14 +48,14 @@ def ddpg_heatmap():
 
     anet = ActorNet()
     anet.load_state_dict(torch.load('param/ddpg_anet_params.pkl'))
-    action_map = anet(state).view(y_pxl, x_pxl).detach().numpy()
+    # action_map = anet(state).view(y_pxl, x_pxl).detach().numpy()
 
     cnet = CriticNet()
     cnet.load_state_dict(torch.load('param/ddpg_cnet_params.pkl'))
     value_map = cnet(state, anet(state)).view(y_pxl, x_pxl).detach().numpy()
 
-    format(plt.subplot(423), value_map, algo_name= 'DDPQ')
-    format(plt.subplot(424), action_map,  algo_name= 'DDPQ',cmap= plt.cm.winter)
+    format(plt.subplot(312), value_map, algo_name= 'DDPQ')
+    # format(plt.subplot(324), action_map,  algo_name= 'DDPQ',cmap= plt.cm.winter)
 
 
 def ppo_heatmap():
@@ -69,10 +69,10 @@ def ppo_heatmap():
 
     anet = ActorNet()
     anet.load_state_dict(torch.load('param/ppo_anet_params.pkl'))
-    action_map = anet(state)[0].view(y_pxl, x_pxl).detach().numpy()
+    # action_map = anet(state)[0].view(y_pxl, x_pxl).detach().numpy()
 
-    format(plt.subplot(425), value_map, algo_name= 'PPO')
-    format(plt.subplot(426), action_map, algo_name= 'PPO',cmap= plt.cm.winter)
+    format(plt.subplot(313), value_map, algo_name= 'PPO')
+    # format(plt.subplot(426), action_map, algo_name= 'PPO',cmap= plt.cm.winter)
 
 
 def ppo_d_heatmap():
@@ -95,7 +95,7 @@ def main():
     dqn_heatmap()
     ddpg_heatmap()
     ppo_heatmap()
-    ppo_d_heatmap()
+    # ppo_d_heatmap()
     plt.tight_layout()
     plt.subplots_adjust( bottom=.1,top=0.9,hspace = .5)
     plt.savefig('img/heatmap.png')

@@ -22,10 +22,10 @@ if __name__ == '__main__':
     normalized_ddpg = ddpg/np.linalg.norm(ddpg)
     sns.lineplot( data=normalized_ddpg,legend='brief', label='DDPG')
 
-    reward_records = np.load('log/ppod_reward.np', allow_pickle=True)
-    ppod = np.var(reward_records, axis=1)
-    normalized_ppod = ppod/np.linalg.norm(ppod)
-    sns.lineplot( data=normalized_ppod,legend='brief', label='PPOD')
+    # reward_records = np.load('log/ppod_reward.np', allow_pickle=True)
+    # ppod = np.var(reward_records, axis=1)
+    # normalized_ppod = ppod/np.linalg.norm(ppod)
+    # sns.lineplot( data=normalized_ppod,legend='brief', label='PPOD')
 
     plt.savefig("img/vars.png")
     plt.show()

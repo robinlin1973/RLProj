@@ -17,22 +17,12 @@ Note that in PPO using value function to estimate advantages, which is different
 ## Result
 The moving averaged episode rewards are shown as below:
 
-![dqn](img_BAK/dqn.png)
-![ddpg](img_BAK/ddpg.png)
-![ppo_d](img_BAK/ppo_d.png)
-![ppo](img_BAK/ppo.png)
+![plot_lines](img/lines.png)
 
 The heatmaps of value and action are shown as below:
 
-![dqn_heatmap](img_BAK/dqn_heatmap.png)
-![ddpg](img_BAK/ddpg_heatmap.png)
-![ppo_d_heatmap](img_BAK/ppo_d_heatmap.png)
-![ppo_heatmap](img_BAK/ppo_heatmap.png)
 
 From the results, we find that value-based algorithums are data-efficient for they are off-policy. Discretized action space is easier to train but the result looks
 ugly (trembling).  
 
 ## Reference
-- [Deep Reinforcement Learning with Double Q-learning](https://arxiv.org/abs/1509.06461)
-- [Continuous control with deep reinforcement learning](https://arxiv.org/abs/1509.02971)
-- [Proximal Policy Optimization Algorithms](https://arxiv.org/abs/1707.06347)
